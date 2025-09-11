@@ -9,6 +9,13 @@
 - Toggle “Wachtwoord tonen” toegevoegd voor gebruiksgemak.
 - Focus states en kleurcontrast verbeterd; responsive layout met CSS Grid.
 
+**Demo admin (alleen lokaal)**
+- Demo-modus is alleen actief op `localhost`, `127.0.0.1` of bij openen via `file://`.
+- Dummy admin inlog:
+  - E‑mail: `admin@local`
+  - Wachtwoord: `demoAdmin123!`
+- In productie (niet‑lokaal) is demo-inlog uitgeschakeld en moet echte server‑side authenticatie worden gebruikt.
+
 **Branches**
 - `old-code`: snapshot van de oorspronkelijke situatie (lege/ruwe pagina).
 - `new-code`: huidige versie met verbeterde loginpagina en validatie.
@@ -19,4 +26,3 @@
 **Lokaal openen**
 - Open `login/index.html` direct in je browser (dubbelklik), of start een simpele server:
   - Python: `python3 -m http.server` en ga naar `http://localhost:8000/login/`
-

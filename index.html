@@ -74,6 +74,7 @@
       <section class="card" aria-labelledby="login-title">
         <h1 id="login-title" class="title">Inloggen</h1>
         <p class="subtitle">Welkom terug. Vul je gegevens in om door te gaan.</p>
+        <div id="demo-banner" class="helper" style="display:none">Demo modus (alleen lokaal): admin@local / demoAdmin123!</div>
 
         <form id="login-form" novalidate>
           <div class="field">
@@ -104,6 +105,14 @@
     </main>
 
     <script>
+      // Demo modus: alleen actief op localhost/127.0.0.1 of bij file://
+      const isLocal = location.hostname === 'localhost' || location.hostname === '127.0.0.1' || location.protocol === 'file:';
+      const DEMO_ADMIN = { email: 'admin@local', password: 'demoAdmin123!' };
+
+      if (isLocal) {
+        const banner = document.getElementById('demo-banner');
+        if (banner) banner.style.display = 'block';
+      }
       // Toon/verberg wachtwoord
       document.getElementById('showPw').addEventListener('change', (e) => {
         const pw = document.getElementById('password');
@@ -128,8 +137,14 @@
         else if (pw.value.length < 6) { pwErr.textContent = 'Minimaal 6 tekens.'; valid = false; }
 
         if (valid) {
-          // Hier zou je een request naar je backend sturen
-          alert('Ingelogd (demo)');
+          // Demo-inlog: alleen lokaal actief, geen productiegebruik
+          if (isLocal && email.value === DEMO_ADMIN.email && pw.value === DEMO_ADMIN.password) {
+            alert('Ingelogd als admin (demo)');
+          } else if (isLocal) {
+            alert('Ingelogd (demo)');
+          } else {
+            alert('Dit is een demo-UI. Implementeer server-side authenticatie in productie.');
+          }
           form.reset();
         }
       });

@@ -1,9 +1,21 @@
+<!--
+  Login pagina (verbeterde versie)
+  Wat is toegevoegd/verbeterd:
+  - Toegankelijke, semantische HTML met labels en aria-live foutmeldingen
+  - Consistente styling met CSS-variabelen, betere focus states en responsive layout
+  - Client-side validatie (HTML5 + JS) voor e‑mail en wachtwoord
+  - Wachtwoord tonen/Verbergen toggle voor gebruiksgemak
+  - Demo-modus: alleen lokaal (localhost/127.0.0.1/file://) met dummy admin inlog
+    E‑mail: admin@local  •  Wachtwoord: demoAdmin123!
+  Opmerking: In productie moet server-side authenticatie worden gebruikt.
+-->
 <!doctype html>
 <html lang="nl">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Login</title>
+    <!-- Basale, thematische CSS met focus op leesbaarheid en focus-toegankelijkheid -->
     <style>
       :root {
         --brand: #ea319f;
@@ -66,20 +78,26 @@
       .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
       .btn--secondary { background: #111827; }
       .helper { text-align: center; color: var(--muted); margin-top: 22px; font-size: 14px; }
+      /* Visually hidden: voor toegankelijke foutmeldingen die door screenreaders worden voorgelezen */
       .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
     </style>
   </head>
   <body>
     <main class="container">
+      <!-- Semantische section met ARIA-koppeling naar de titel -->
       <section class="card" aria-labelledby="login-title">
         <h1 id="login-title" class="title">Inloggen</h1>
         <p class="subtitle">Welkom terug. Vul je gegevens in om door te gaan.</p>
+        <!-- Deze banner verschijnt alleen in demo-modus (lokaal) met de test-credentials -->
         <div id="demo-banner" class="helper" style="display:none">Demo modus (alleen lokaal): admin@local / demoAdmin123!</div>
 
+        <!-- novalidate: we controleren zelf en tonen toegankelijke feedback -->
         <form id="login-form" novalidate>
           <div class="field">
+            <!-- Label gekoppeld via for= aan het invoerveld -->
             <label for="email">E‑mail of telefoon</label>
             <input id="email" name="email" type="email" class="input" autocomplete="username" required placeholder="naam@voorbeeld.nl">
+            <!-- aria-live=polite: screenreaders kondigen foutmeldingen aan -->
             <small id="email-error" class="sr-only" aria-live="polite"></small>
           </div>
           <div class="field">
@@ -105,7 +123,8 @@
     </main>
 
     <script>
-      // Demo modus: alleen actief op localhost/127.0.0.1 of bij file://
+      // Bepaal of we in demo-modus werken (alleen voor lokale ontwikkeling)
+      // In demo-modus zijn dummy admin-gegevens toegestaan. Niet voor productie!
       const isLocal = location.hostname === 'localhost' || location.hostname === '127.0.0.1' || location.protocol === 'file:';
       const DEMO_ADMIN = { email: 'admin@local', password: 'demoAdmin123!' };
 
@@ -113,13 +132,13 @@
         const banner = document.getElementById('demo-banner');
         if (banner) banner.style.display = 'block';
       }
-      // Toon/verberg wachtwoord
+      // UX: Wachtwoord tonen/verbergen toggle
       document.getElementById('showPw').addEventListener('change', (e) => {
         const pw = document.getElementById('password');
         pw.type = e.target.checked ? 'text' : 'password';
       });
 
-      // Simpele client-side validatie + toegankelijke foutmeldingen
+      // Validatie: eenvoudige checks + toegankelijke foutmeldingen via aria-live
       const form = document.getElementById('login-form');
       form.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -137,7 +156,9 @@
         else if (pw.value.length < 6) { pwErr.textContent = 'Minimaal 6 tekens.'; valid = false; }
 
         if (valid) {
-          // Demo-inlog: alleen lokaal actief, geen productiegebruik
+          // Succespad:
+          // - In demo (lokaal): admin-credentials laten inloggen
+          // - Niet lokaal: enkel een melding tonen (geen echte auth in deze demo)
           if (isLocal && email.value === DEMO_ADMIN.email && pw.value === DEMO_ADMIN.password) {
             alert('Ingelogd als admin (demo)');
           } else if (isLocal) {
